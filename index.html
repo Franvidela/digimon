@@ -1,17 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.min.js"></script>
-
-    <script src="/asssets/js/script.js"></script>
-    <title>Document</title>
+	<title>Digimon Search</title>
+	<!-- Agrega la librería jQuery -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<!-- Agrega el archivo JavaScript de CanvasJS -->
+	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+	<!-- Agrega la librería Bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
-    <ul id="digimon-list" class="list-group"></ul>
+	<div class="container mt-3">
+		<!-- Agrega un input para la búsqueda -->
+		<div class="row">
+			<div class="col-md-6">
+				<div class="input-group mb-3">
+					<input type="text" class="form-control" placeholder="Buscar digimon" id="search-input">
+					<button class="btn btn-primary" type="button" id="search-button">Buscar</button>
+				</div>
+			</div>
+		</div>
+		<!-- Agrega una lista para mostrar los digimon -->
+		<div class="row">
+			<div class="col-md-12">
+				<ul id="digimon-list" class="list-group"></ul>
+			</div>
+		</div>
+		<!-- Agrega un contenedor para el gráfico -->
+		<div class="row">
+			<div class="col-md-12">
+				<div id="chartContainer" style="height: 370px; width: 100%;"></div>
+			</div>
+		</div>
+	</div>
 
+	<!-- Agrega el código JavaScript -->
+	<script>
+		// Aquí va el código
+	</script>
 </body>
 </html>
