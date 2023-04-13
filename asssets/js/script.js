@@ -1,22 +1,26 @@
-$(document).ready(function() {
-	// Obtiene la lista de digimon desde la API y la muestra en pantalla
-	$.getJSON('https://digimon-api.vercel.app/api/digimon', function(data) {
-		showDigimonList(data);
-		showDigimonChart(data);
-	});
+function showDigimonDetails(digimon) {
+	const $details = $('#digimon-details');
+	$details.empty();
+	if (digimon === null) {
+		$details.append('<p class="text-muted">Selecciona un Digimon para ver sus detalles.</p>');
+	} else {
+		$details.append(`<h3>${digimon.name}</h3>`);
+		$details.append(`<p><strong>Tipo:</strong> ${digimon.type}</p>`);
+		$details.append(`<p><strong>Nivel:</strong> ${digimon.level}</p>`);
+		if (digimon.img) {
+			$details.append(`<img src="${digimon.img}" alt="${digimon.name}">`);
+		}
+	}
+}
 
-	// Agrega un listener para el botón de búsqueda
-	$('#search-button').click(function() {
-		const searchTerm = $('#search-input').val().toLowerCase();
-		// Filtra los digimon según el término de búsqueda
-		$.getJSON(`https://digimon-api.vercel.app/api/digimon/name/${searchTerm}`, function(data) {
-			showDigimonList(data);
-			showDigimonChart(data);
-		});
-	});
-});
+function getDigimonList() {
+	return $.getJSON('https://digimon-api.vercel.app/api/digimon');
+}
 
-// Muestra la lista de digimon en pantalla
+function searchDigimonByName(name) {
+	return $.getJSON(`https://digimon-api.vercel.app/api/digimon/name/${name}`);
+}
+
 function showDigimonList(digimonList) {
 	const $list = $('#digimon-list');
 	$list.empty();
@@ -29,20 +33,30 @@ function showDigimonList(digimonList) {
 	}
 }
 
-// Muestra el gráfico de tipos de digimon en pantalla
-function showDigimonChart(digimonList) {
-	// Agrupa los digimon por tipo
-	const groupedData = _.groupBy(digimonList, 'type');
-	const chartData = [];
+function groupDigimonByType(digimonList) {
+	const groups = {};
+	digimonList.forEach(function(digimon) {
+		if (groups[digimon.type] === undefined) {
+			groups[digimon.type] = [];
+		}
+		groups[digimon.type].push(digimon);
+	});
+	return groups;
+}
 
-	// Crea un objeto para cada tipo de digimon con su cantidad y lo agrega al array de datos para el gráfico
-	for (const type in groupedData) {
-		if (groupedData.hasOwnProperty(type)) {
-			chartData.push({label: type, y: groupedData[type].length});
+function createChartData(groups) {
+	const chartData = [];
+	for (const type in groups) {
+		if (groups.hasOwnProperty(type)) {
+			chartData.push({label: type, y: groups[type].length});
 		}
 	}
+	return chartData;
+}
 
-	// Crea el gráfico de CanvasJS
+function showDigimonChart(digimonList) {
+	const groups = groupDigimonByType(digimonList);
+	const chartData = createChartData(groups);
 	const chart = new CanvasJS.Chart("chartContainer", {
 		animationEnabled: true,
 		title: {
@@ -58,3 +72,21 @@ function showDigimonChart(digimonList) {
 	});
 	chart.render();
 }
+
+$(document).ready(function() {
+	// Obtiene la lista de digimon desde la API y la muestra en pantalla
+	getDigimonList().then(function(data) {
+		showDigimonList(data);
+		showDigimonChart(data);
+	});
+
+	// Agrega un listener para el botón de búsqueda
+	$('#search-button').click(function() {
+		const searchTerm = $('#search-input').val().toLowerCase();
+		// Filtra los digimon según el término de búsqueda
+		searchDigimonByName(searchTerm).then(function(data) {
+			showDigimonList(data);
+			showDigimonChart(data);
+		});
+	});
+});
